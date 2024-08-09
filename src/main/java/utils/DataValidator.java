@@ -184,5 +184,6 @@ public class DataValidator {
             return false;
         }
     }
+    public static validateUUID(/*to be used to check if user already has a UUID and then go ahead with registering*/)
 
 }
