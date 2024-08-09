@@ -13,7 +13,5 @@ write_initial_data() {
     fi
 }
 
-email="test@example.com"
-uuid="123e4567-e89b-12d3-a456-426614174000"
 
-write_initial_data $email $uuid
+write_initial_data $1 $2

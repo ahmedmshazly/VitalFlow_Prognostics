@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VitalFlow_Prognostics.iml" filepath="$PROJECT_DIR$/VitalFlow_Prognostics.iml" />
-      <module fileurl="file://$PROJECT_DIR$/scripts/scripts.iml" filepath="$PROJECT_DIR$/scripts/scripts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/scripts/scripts.iml" filepath="$PROJECT_DIR$/src/scripts/scripts.iml" />
     </modules>
   </component>
 </project>
