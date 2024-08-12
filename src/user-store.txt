@@ -1,0 +1,3 @@
+UUID,email,userRole,passwordHash,firstName,lastName,dob,hivStatus,diagnosisDate,onART,artStartDate,country
+123e4567-e89b-12d3-a456-426614174000,Admin1@gmail.com,Admin,k2oYXKqiZrucvpgengXLeM1zKwsygOuURBK7b4+PB68=,,,,,,,,
+123e4567-e89b-12d3-a456-426616574000,johndoe@email.com,Patient,k2oYXKqiZrucvpgengXLeM1zKwsygOuURBK7b4+PB68=,john,doe,1984-05-17,true,1997-07-09,true,2004-11-23,US

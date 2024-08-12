@@ -84,11 +84,7 @@ public class DataValidator {
             return false;
         }
 
-        if (!password.matches(SPECIAL_CHAR_REGEX)) {
-            return false;
-        }
-
-        return true; 
+        return password.matches(SPECIAL_CHAR_REGEX); 
     }
 
     public static boolean validateDOB(String dob) {
@@ -106,11 +102,7 @@ public class DataValidator {
             }
 
             LocalDate minDateOfBirth = LocalDate.of(1900, 1, 1); // Minimum valid date
-            if (dateOfBirth.isBefore(minDateOfBirth)) {
-                return false;
-            }
-
-            return true;
+            return !dateOfBirth.isBefore(minDateOfBirth);
 
         } catch (DateTimeParseException e) {
             return false;
@@ -132,11 +124,7 @@ public class DataValidator {
                 }
 
                 LocalDate minDiagnosisDate = LocalDate.of(1900, 1, 1); // Minimum valid date
-                if (diagnosisDateParsed.isBefore(minDiagnosisDate)) {
-                    return false;
-                }
-
-                return true;
+                return !diagnosisDateParsed.isBefore(minDiagnosisDate);
 
             } catch (DateTimeParseException e) {
                 return false;
@@ -160,11 +148,7 @@ public class DataValidator {
                 }
 
                 LocalDate minstartDate = LocalDate.of(1900, 1, 1); // Minimum valid date
-                if (startDateParsed.isBefore(minstartDate)) {
-                    return false;
-                }
-
-                return true;
+                return !startDateParsed.isBefore(minstartDate);
 
             } catch (DateTimeParseException e) {
                 return false;
@@ -178,12 +162,20 @@ public class DataValidator {
             return false;
         }
 
-        if (VALID_ISO_CODES.contains(ISO)){
-            return true;
-        }else{
-            return false;
-        }
+        return VALID_ISO_CODES.contains(ISO);
     }
-    public static validateUUID(/*to be used to check if user already has a UUID and then go ahead with registering*/)
+
+    /*to be used to check if user already has a UUID and then go ahead with registering*/
+    public static boolean validateUUID(String UUID){
+        return FileHandler.validateUUID(UUID);
+    }
+
+    public static boolean validateUUIDEmail(String UUID, String email) {
+        if (validateUUID(UUID)){
+            String _email = FileHandler.getUUIDEmail(UUID);
+            return _email.equals(email);
+        }
+        return  false;
+    }
 
 }

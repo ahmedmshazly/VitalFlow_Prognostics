@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class FileHandler{
-    private static String storePath = "../../../../scripts/user-store.txt";
+    private static final String storePath = "./user-store.txt";
 
-    private String executeCommand(String[] command) {
+    private static String executeCommand(String[] command) {
         StringBuilder output = new StringBuilder();
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command);
@@ -15,7 +15,7 @@ public class FileHandler{
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
+                output.append(line)/*.append("\n")*/;
             }
             process.waitFor();
         } catch (Exception e) {
@@ -25,21 +25,115 @@ public class FileHandler{
     }
     // to be used when admin is registering a patient where the UUID is generated and stored in the user-store.txt file
     public static void initialPatientRegister(String UUID, String email){
+        String[] cmd = {
+            "bash",
+            "main/resources/initialPatientRegister.sh",
+            UUID, email, storePath
+        };
 
+        executeCommand(cmd);
     }
 
-    // to be used during the patients registeration. this informations are stored in the user-store.txt file
-    public static boolean finalPatientRegister(/*String UUID,*/ String firstName, String lastName, /*String email*/ String DOB, bool HIVStatus, String diagnosisDate, bool isOnART, String ARTStartDate, String ISO) {}
+    public static String getUUIDEmail(String UUID) {
+        // boolean exists = validateUUID(UUID);
+        String[] cmd = {
+            "bash",
+            "main/resources/getUUIDEmail.sh",
+            UUID, storePath
+        };
 
-    public static Object[] getPatientDetails(String UUID) {
-        return new Object[]{UUID, "firstname", "lastname", "email", "DOB", "etc"};
+        String email = executeCommand(cmd);
+        return email;
     }
 
-    public static validateUUID(/*to be used to check if user already has a UUID and then go ahead with registering*/)
+    public static String getPassword(String UUID) {
+        String[] cmd = {
+            "bash",
+            "main/resources/getPassword.sh",
+            UUID, storePath
+        };
 
-    public static String getPassword(String email) {
-        return "password"; //get from bash
+        String password = executeCommand(cmd);
+        return password;
     }
 
-    public static String passwordHash(String plainText)
+    // to be used during the patients registeration. this informations are stored in the user-store.txt file check if the email matches first
+    public static void finalPatientRegister(String UUID, String firstName, String lastName, String DOB, boolean HIVStatus, String diagnosisDate, boolean isOnART, String ARTStartDate, String ISO, String password) {
+        String hashedPassword = hashPassword(password);
+        String[] cmd = {
+            "bash",
+            "main/resources/completePatientReg.sh",
+            UUID, firstName, lastName, DOB, String.valueOf(HIVStatus), diagnosisDate, String.valueOf(isOnART), ARTStartDate, ISO, hashedPassword, storePath
+        };
+
+        executeCommand(cmd);
+    }
+
+    //will return less than total number of strings if details not complete eg: for admin
+    public static String[] getPatientDetails(String UUID) {
+        if (validateUUID(UUID)) {
+            String[] cmd = {
+                "bash",
+                "main/resources/getPatientDetails.sh",
+                UUID, storePath
+            };
+            String output = executeCommand(cmd);
+            return output.split(",");
+        }
+        return new String[0];
+    }
+
+    public static boolean validateUUID(String UUID) {
+        String[] cmd = {
+            "bash",
+            "main/resources/checkUUID.sh",
+            UUID, storePath
+        };
+
+        String output = executeCommand(cmd);
+        return Boolean.parseBoolean(output);
+    }
+    
+    public static String hashPassword(String plainPassword) {
+        String[] cmd = {
+            "bash",
+            "main/resources/passwordHasher.sh",
+            plainPassword
+        };
+
+        String hashedPassword = executeCommand(cmd);
+        return hashedPassword;
+    }
+
+    public static void initialAdmin() {
+        String[] cmd = {
+            "bash",
+            "main/resources/initialAdmin.sh",
+            storePath
+        };
+        executeCommand(cmd);
+    }
+
+    // public static void main(String[] args) {
+    //     // initialAdmin();
+    //     String UUID = args[0];
+    //     // String first = args[1];
+    //     // String last = args[2];
+    //     // String DOB = args[3];
+    //     // String stat = args[4];
+    //     // String diagDate = args[5];
+    //     // String isOnArt = args[6];
+    //     // String ArtStart = args[7];
+    //     // String iso = args[8];
+    //     // String password = args[9];
+    //     // String email = args[10];
+    //     // initialPatientRegister(UUID, email);
+    //     // finalPatientRegister(UUID, first, last, DOB, Boolean.parseBoolean(stat), diagDate, Boolean.parseBoolean(isOnArt), ArtStart, iso, password);
+    //     String[] output = getPatientDetails(UUID);
+    //     if (output.length != 0){
+    //         for(String element : output) {
+    //             System.out.println(element);
+    //         }
+    //     }
+    // }
 }
