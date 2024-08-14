@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 
-UUID=$1
+email=$1
 Path=$2
 
-password=$(grep -E "^${UUID}," "$Path" | cut -d ',' -f 4)
+password=$(grep -E ",${email}," "$Path" | cut -d ',' -f 4)
 
 echo "$password"

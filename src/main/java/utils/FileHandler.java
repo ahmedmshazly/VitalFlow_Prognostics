@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 
 public class FileHandler{
     private static final String storePath = "./user-store.txt";
+    private static final String expectancyPath = "./life-expectancy.csv";
 
     private static String executeCommand(String[] command) {
         StringBuilder output = new StringBuilder();
@@ -46,36 +47,68 @@ public class FileHandler{
         return email;
     }
 
-    public static String getPassword(String UUID) {
+    public static String getPassword(String email) {
         String[] cmd = {
             "bash",
             "main/resources/getPassword.sh",
-            UUID, storePath
+            email, storePath
         };
 
         String password = executeCommand(cmd);
         return password;
     }
 
+    public static double getISOLifeExpectancy(String ISO) {
+        String[] cmd = {
+            "bash",
+            "main/resources/getISOLifeExpectancy.sh",
+            ISO, expectancyPath
+        };
+        String expectancyString = executeCommand(cmd);
+        return Double.parseDouble(expectancyString);
+    }
+
+    public static String getUserRole(String email) {
+        String[] cmd = {
+            "bash",
+            "main/resources/getUserRole.sh",
+            email, storePath
+        };
+
+        String role = executeCommand(cmd);
+        return role;
+    }
+
     // to be used during the patients registeration. this informations are stored in the user-store.txt file check if the email matches first
-    public static void finalPatientRegister(String UUID, String firstName, String lastName, String DOB, boolean HIVStatus, String diagnosisDate, boolean isOnART, String ARTStartDate, String ISO, String password) {
+    public static void finalPatientRegister(String UUID, String firstName, String lastName, String DOB, Boolean HIVStatus, String diagnosisDate, Boolean isOnART, String ARTStartDate, String ISO, String password, int remainingYears) {
         String hashedPassword = hashPassword(password);
         String[] cmd = {
             "bash",
             "main/resources/completePatientReg.sh",
-            UUID, firstName, lastName, DOB, String.valueOf(HIVStatus), diagnosisDate, String.valueOf(isOnART), ARTStartDate, ISO, hashedPassword, storePath
+            UUID, firstName, lastName, DOB, String.valueOf(HIVStatus), diagnosisDate, String.valueOf(isOnART), ARTStartDate, ISO, hashedPassword, String.valueOf(remainingYears), storePath
+        };
+
+        executeCommand(cmd);
+    }
+
+    public static void UpdatePatientDetails(String UUID, String firstName, String lastName, String DOB, Boolean HIVStatus, String diagnosisDate, Boolean isOnART, String ARTStartDate, String ISO, String password, int remainingYears) {
+        String hashedPassword = hashPassword(password);
+        String[] cmd = {
+            "bash",
+            "main/resources/updatePatientInfo.sh",
+            UUID, firstName, lastName, DOB, String.valueOf(HIVStatus), diagnosisDate, String.valueOf(isOnART), ARTStartDate, ISO, hashedPassword, String.valueOf(remainingYears), storePath
         };
 
         executeCommand(cmd);
     }
 
     //will return less than total number of strings if details not complete eg: for admin
-    public static String[] getPatientDetails(String UUID) {
-        if (validateUUID(UUID)) {
+    public static String[] getPatientDetails(String email) {
+        if (validateEmail(email)) {
             String[] cmd = {
                 "bash",
                 "main/resources/getPatientDetails.sh",
-                UUID, storePath
+                email, storePath
             };
             String output = executeCommand(cmd);
             return output.split(",");
@@ -88,6 +121,17 @@ public class FileHandler{
             "bash",
             "main/resources/checkUUID.sh",
             UUID, storePath
+        };
+
+        String output = executeCommand(cmd);
+        return Boolean.parseBoolean(output);
+    }
+
+    public static boolean validateEmail(String email) {
+        String[] cmd = {
+            "bash",
+            "main/resources/checkEmail.sh",
+            email, storePath
         };
 
         String output = executeCommand(cmd);
@@ -114,9 +158,9 @@ public class FileHandler{
         executeCommand(cmd);
     }
 
-    // public static void main(String[] args) {
+    public static void main(String[] args) {
     //     // initialAdmin();
-    //     String UUID = args[0];
+        String email = args[0];
     //     // String first = args[1];
     //     // String last = args[2];
     //     // String DOB = args[3];
@@ -127,7 +171,7 @@ public class FileHandler{
     //     // String iso = args[8];
     //     // String password = args[9];
     //     // String email = args[10];
-    //     // initialPatientRegister(UUID, email);
+    String role = getUserRole(email);
     //     // finalPatientRegister(UUID, first, last, DOB, Boolean.parseBoolean(stat), diagDate, Boolean.parseBoolean(isOnArt), ArtStart, iso, password);
     //     String[] output = getPatientDetails(UUID);
     //     if (output.length != 0){
@@ -135,5 +179,6 @@ public class FileHandler{
     //             System.out.println(element);
     //         }
     //     }
-    // }
+    System.out.println(role);
+    }
 }

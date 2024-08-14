@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-UUID=$1
+email=$1
 user_store=$2
 
-grep "$UUID" "$user_store"
+grep "$email" "$user_store"

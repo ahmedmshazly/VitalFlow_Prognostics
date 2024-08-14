@@ -2,52 +2,51 @@ package main.java.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class DataValidator {
-    private static final Set<String> VALID_ISO_CODES = new HashSet<>();
     
-    static {
-        // Add ISO 3166-1 alpha-2 country codes
-        String[] codes = {
-            "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AR", "AS", "AT", "AU", "AW", "AX", "AZ",
-            "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR",
-            "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL",
-            "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO",
-            "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FM", "FO", "FR", "GA", "GB",
-            "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GT", "GU", "GW",
-            "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR",
-            "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW",
-            "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC",
-            "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT",
-            "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP",
-            "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PT",
-            "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH",
-            "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC",
-            "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TZ", "UA",
-            "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE",
-            "YT", "ZA", "ZM", "ZW"
-        };
-        for (String code : codes) {
-            VALID_ISO_CODES.add(code);
-        }
-    }
+    private static final String[] ISOs = {
+        "AF", "AL", "DZ", "AS", "AD", "AO", "AI", "AG", "AR", "AM",
+        "AW", "AU", "AT", "AZ", "BS", "BH", "BD", "BB", "BY", "BE",
+        "BZ", "BJ", "BM", "BT", "BO", "BQ", "BA", "BW", "BR", "VG",
+        "BN", "BG", "BF", "BI", "KH", "CM", "CA", "CV", "KY", "CF",
+        "TD", "CL", "CN", "CO", "KM", "CG", "CK", "CR", "CI", "HR",
+        "CU", "CW", "CY", "CZ", "CD", "DK", "DJ", "DM", "DO", "TL",
+        "EC", "EG", "SV", "GQ", "ER", "EE", "SZ", "ET", "FK", "FO",
+        "FJ", "FI", "FR", "GF", "PF", "GA", "GM", "GE", "DE", "GH",
+        "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", "GN", "GW",
+        "GY", "HT", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ",
+        "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE",
+        "KI", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI",
+        "LT", "LU", "MO", "MG", "MW", "MY", "MV", "ML", "MT", "MH",
+        "MQ", "MR", "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME",
+        "MS", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "NC", "NZ",
+        "NI", "NE", "NG", "NU", "KP", "MK", "MP", "NO", "OM", "PK",
+        "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PL", "PT", "PR",
+        "QA", "RE", "RO", "RU", "RW", "BL", "SH", "KN", "LC", "MF",
+        "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL",
+        "SG", "SX", "SK", "SI", "SB", "SO", "ZA", "KR", "SS", "ES",
+        "LK", "SD", "SR", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH",
+        "TG", "TK", "TO", "TT", "TN", "TR", "TM", "TC", "TV", "UG",
+        "UA", "AE", "GB", "US", "VI", "UY", "UZ", "VU", "VE", "VN",
+        "WF", "EH", "YE", "ZM", "ZW"
+    };
 
-    public static boolean validateFirstName(String firstName) {
-        if (firstName == null || firstName.isEmpty()) {
+    public static boolean validateName(String name) {
+        if (name == null || name.isEmpty()) {
             return false;
         }
-        return firstName.matches("[A-Za-z]{2,}");
+        return name.matches("[A-Za-z]{2,}");
     }
 
-    public static boolean validateLastName(String lastName) {
-        if (lastName == null || lastName.isEmpty()) {
-            return false;
-        }
-        return lastName.matches("[A-Za-z]{2,}");
-    }
+    // public static boolean validateLastName(String lastName) {
+    //     if (lastName == null || lastName.isEmpty()) {
+    //         return false;
+    //     }
+    //     return lastName.matches("[A-Za-z]{2,}");
+    // }
 
     public static boolean validateEmail(String email) {
         if (email == null || email.isEmpty()) {
@@ -161,8 +160,11 @@ public class DataValidator {
         if (ISO == null || ISO.isEmpty()){
             return false;
         }
+        // System.out.println(ISO);
+        // System.out.println(Arrays.asList(ISOs).contains(ISO));
+        // System.out.println(ISO);
 
-        return VALID_ISO_CODES.contains(ISO);
+        return Arrays.asList(ISOs).contains(ISO);
     }
 
     /*to be used to check if user already has a UUID and then go ahead with registering*/

@@ -1,3 +1,3 @@
-UUID,email,userRole,passwordHash,firstName,lastName,dob,hivStatus,diagnosisDate,onART,artStartDate,country
-123e4567-e89b-12d3-a456-426614174000,Admin1@gmail.com,Admin,k2oYXKqiZrucvpgengXLeM1zKwsygOuURBK7b4+PB68=,,,,,,,,
-123e4567-e89b-12d3-a456-426616574000,johndoe@email.com,Patient,k2oYXKqiZrucvpgengXLeM1zKwsygOuURBK7b4+PB68=,john,doe,1984-05-17,true,1997-07-09,true,2004-11-23,US
+UUID,email,userRole,passwordHash,firstName,lastName,dob,hivStatus,diagnosisDate,onART,artStartDate,country,lifeExpentancy
+123e4567-e89b-12d3-a456-426614174000,Admin1@gmail.com,Admin,k2oYXKqiZrucvpgengXLeM1zKwsygOuURBK7b4+PB68=,,,,,,,,,
+4410e3df-ca3b-4b94-a9de-9bd2bc1eed8a,qwerty@gmail.com,Patient,ZehL4zUy+3hMSBKWdfnv86aCsnFowOp0Syz1juAjN8U=,qweqwe,qwsd,2000-09-10,true,2006-12-17,true,2007-10-23,US,48
