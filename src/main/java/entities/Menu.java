@@ -195,6 +195,7 @@ public class Menu {
                     System.out.println("Export Data");
                     break;
                 case 0:
+                    CLI.clearScreen();
                     return;
                 default:
                     CLI.clearScreen();
@@ -247,6 +248,7 @@ public class Menu {
                     System.out.println("Export ICS...");
                     break;
                 case 0:
+                    CLI.clearScreen();
                     return;
                 default:
                     CLI.clearScreen();
