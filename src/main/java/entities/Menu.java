@@ -6,15 +6,16 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import main.java.utils.FileHandler;
-import main.java.utils.SecurityHandler;
-import main.java.utils.DataValidator;
-import main.java.user.UserRoles;
 import main.java.user.Admin;
 import main.java.user.Patient;
+import main.java.user.UserRoles;
 import main.java.utils.CLI;
+import main.java.utils.DataValidator;
+import main.java.utils.FileHandler;
+import main.java.utils.SecurityHandler;
 
 public class Menu {
+
     public static void startPage() {
         System.out.println("Welcome to the Life Prognosis & Management Tool");
         System.out.println("\nChoose an option:");
@@ -50,13 +51,17 @@ public class Menu {
         // }
         // userRoles role = SecurityManager.getRole(email);
         // return role;
-        if (FileHandler.validateEmail(email)){
-            if (SecurityHandler.verifyPassword(email, passsword)){
-                return new Object[]{SecurityHandler.getRole(email), email, passsword};
-            }else{
+        if (FileHandler.validateEmail(email)) {
+            if (SecurityHandler.verifyPassword(email, passsword)) {
+                return new Object[] {
+                    SecurityHandler.getRole(email),
+                    email,
+                    passsword,
+                };
+            } else {
                 System.out.println("Invalid Password");
             }
-        }else {
+        } else {
             // CLI.clearScreen();
             System.out.println("Account doesn't exist!");
             System.out.println("Contact an Administrator.");
@@ -71,7 +76,7 @@ public class Menu {
             //     System.out.println("Invalid option");
             // }
         }
-        Object[] nullObject = new Object[]{null,null,null};
+        Object[] nullObject = new Object[] { null, null, null };
         return nullObject;
     }
 
@@ -80,18 +85,18 @@ public class Menu {
         System.out.println("Complete Registration Page!");
         System.out.print("Enter UUID: ");
         String uuid = scanner.nextLine();
-        if (DataValidator.validateUUID(uuid)){
+        if (DataValidator.validateUUID(uuid)) {
             System.out.print("Enter FirstName: ");
             String firstName = scanner.nextLine();
             Boolean breaker = DataValidator.validateName(firstName);
-            if (!breaker){
+            if (!breaker) {
                 System.out.println("Invalid name!");
                 return;
             }
             System.out.print("Enter LastName: ");
             String lastName = scanner.nextLine();
             breaker = DataValidator.validateName(lastName);
-            if (!breaker){
+            if (!breaker) {
                 System.out.println("Invalid name!");
                 return;
             }
@@ -101,7 +106,7 @@ public class Menu {
             System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
             String DOB = scanner.nextLine();
             breaker = DataValidator.validateDOB(DOB);
-            if (!breaker){
+            if (!breaker) {
                 System.out.println("Invalid Date of Birth");
                 return;
             }
@@ -109,7 +114,9 @@ public class Menu {
             String ISO = scanner.nextLine();
             breaker = DataValidator.validateISO(ISO);
             if (!breaker) {
-                System.out.println("Invalid ISO! Make sure it's in Alpha-2 code format");
+                System.out.println(
+                    "Invalid ISO! Make sure it's in Alpha-2 code format"
+                );
                 return;
             }
             System.out.print("Are you HIV positive? (y/n): ");
@@ -119,45 +126,70 @@ public class Menu {
             Boolean isOnArt;
             String ArtStartDate;
             double isoExpectancy = getISOLifeExpectancy(ISO);
-            if (opt1.equals("y")){
+            if (opt1.equals("y")) {
                 hivStatus = true;
                 System.out.print("Enter Diagnosis Date (YYYY-MM-DD): ");
                 diagnosisDate = scanner.nextLine();
-                breaker = DataValidator.validateHIVStatusAndDiagnosisDate(hivStatus, diagnosisDate);
-                if (!breaker){
+                breaker = DataValidator.validateHIVStatusAndDiagnosisDate(
+                    hivStatus,
+                    diagnosisDate
+                );
+                if (!breaker) {
                     System.out.println("Invalid Diagnosis Date!");
                     return;
                 }
                 System.out.print("Are you on ART medications? (y/n): ");
                 String opt2 = scanner.nextLine();
-                if (opt2.equals("y")){
+                if (opt2.equals("y")) {
                     isOnArt = true;
                     System.out.print("Enter ART Start Date (YYYY-MM-DD): ");
                     ArtStartDate = scanner.nextLine();
-                    breaker = DataValidator.validateIsOnARTandStartDate(isOnArt, ArtStartDate);
-                    if (!breaker){
+                    breaker = DataValidator.validateIsOnARTandStartDate(
+                        isOnArt,
+                        ArtStartDate
+                    );
+                    if (!breaker) {
                         System.out.println("Invalid ART Start Date!");
                         return;
                     }
-                } else if (opt2.equals("n")){
+                } else if (opt2.equals("n")) {
                     isOnArt = false;
-                    ArtStartDate = null;
-                }else{
+                    ArtStartDate = "0000-00-00";
+                } else {
                     System.out.println("Invalid option!");
                     return;
                 }
-            }else if (opt1.equals("n")){
+            } else if (opt1.equals("n")) {
                 hivStatus = false;
-                diagnosisDate = null;
-                isOnArt = null;
-                ArtStartDate = null;
-                ISO = null;
-            }else{
+                diagnosisDate = "0000-00-00";
+                isOnArt = false;
+                ArtStartDate = "0000-00-00";
+                // ISO = "nu";
+            } else {
                 System.out.println("Invalid option!");
                 return;
             }
-            int remainingYears = calculateRemainingYears(isoExpectancy, hivStatus, isOnArt, DOB, diagnosisDate, ArtStartDate);
-            FileHandler.finalPatientRegister(uuid,firstName,lastName,DOB,hivStatus,diagnosisDate,isOnArt,ArtStartDate,ISO,passsword, remainingYears);
+            int remainingYears = calculateRemainingYears(
+                isoExpectancy,
+                hivStatus,
+                isOnArt,
+                DOB,
+                diagnosisDate,
+                ArtStartDate
+            );
+            FileHandler.finalPatientRegister(
+                uuid,
+                firstName,
+                lastName,
+                DOB,
+                hivStatus,
+                diagnosisDate,
+                isOnArt,
+                ArtStartDate,
+                ISO,
+                passsword,
+                remainingYears
+            );
             System.out.println("Registration Complete");
             CLI.sleep(2);
             CLI.clearScreen();
@@ -168,7 +200,7 @@ public class Menu {
 
     public static void adminPage(Admin admin, Scanner scanner) {
         int choice;
-        do{
+        do {
             CLI.clearScreen();
             System.out.println("Welcome Admin!");
             System.out.println("\nChoose an option:");
@@ -177,10 +209,10 @@ public class Menu {
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
 
-            if (scanner.hasNextInt()){
+            if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
                 scanner.nextLine();
-            }else{
+            } else {
                 scanner.nextLine();
                 System.out.println("Please enter a valid number.");
                 continue;
@@ -201,8 +233,7 @@ public class Menu {
                     CLI.clearScreen();
                     System.out.println("Invalid choice, please enter 0-2.");
             }
-        }
-        while(true);
+        } while (true);
     }
 
     public static void adminPatientRegister(Admin admin, Scanner scanner) {
@@ -216,7 +247,7 @@ public class Menu {
     public static void patientPage(Patient patient, Scanner scanner) {
         String[] details = FileHandler.getPatientDetails(patient.getEmail());
         int choice;
-        do { 
+        do {
             CLI.clearScreen();
             System.out.println("Welcome " + details[4] + "!");
             System.out.println("\nChoose an option:");
@@ -226,10 +257,10 @@ public class Menu {
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
 
-            if (scanner.hasNextInt()){
+            if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
                 scanner.nextLine();
-            }else{
+            } else {
                 scanner.nextLine();
                 System.out.println("Please enter a valid number.");
                 continue;
@@ -237,7 +268,7 @@ public class Menu {
             switch (choice) {
                 case 1:
                     CLI.clearScreen();
-                    displayPatientData(details, scanner);
+                    displayPatientData(details[0], scanner);
                     break;
                 case 2:
                     CLI.clearScreen();
@@ -261,22 +292,42 @@ public class Menu {
         return FileHandler.getISOLifeExpectancy(ISO);
     }
 
-    public static int calculateRemainingYears(double isoExpectancy, Boolean hivStatus, Boolean isOnArt, String dob, String diagnosisDate, String ArtStartDate) {
-        LocalDate parsedDob = LocalDate.parse(dob, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    public static int calculateRemainingYears(
+        double isoExpectancy,
+        Boolean hivStatus,
+        Boolean isOnArt,
+        String dob,
+        String diagnosisDate,
+        String ArtStartDate
+    ) {
+        LocalDate parsedDob = LocalDate.parse(
+            dob,
+            DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        );
         int age = Period.between(parsedDob, LocalDate.now()).getYears();
 
         if (!hivStatus) {
             return (int) isoExpectancy - age;
         }
-        LocalDate parsedDiagnosisDate = LocalDate.parse(diagnosisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        if (hivStatus && !isOnArt){
+        LocalDate parsedDiagnosisDate = LocalDate.parse(
+            diagnosisDate,
+            DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        );
+        if (hivStatus && !isOnArt) {
             return 5 + parsedDiagnosisDate.getYear() - age;
         }
-        LocalDate parsedArtStartDate = LocalDate.parse(ArtStartDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        int diagnosisToArtStartYears = Period.between(parsedDiagnosisDate, parsedArtStartDate).getYears();
+        LocalDate parsedArtStartDate = LocalDate.parse(
+            ArtStartDate,
+            DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        );
+        int diagnosisToArtStartYears = Period.between(
+            parsedDiagnosisDate,
+            parsedArtStartDate
+        ).getYears();
 
         if (hivStatus && isOnArt) {
-            double remainingYears = (isoExpectancy - age - diagnosisToArtStartYears) * 0.90;
+            double remainingYears =
+                (isoExpectancy - age - diagnosisToArtStartYears) * 0.90;
 
             for (int i = 0; i < diagnosisToArtStartYears; i++) {
                 remainingYears *= 0.90;
@@ -286,27 +337,36 @@ public class Menu {
         return 0;
     }
 
-    public static void displayPatientData(String[] data, Scanner scanner) {
+    public static void displayPatientData(String data1, Scanner scanner) {
         CLI.clearScreen();
         int choice;
-        do{
+        do {
+            String[] data = FileHandler.getPatientDetails(data1);
             String format = "%-20s: %-30s%n";
             System.out.println("------------ Profile ------------");
             System.out.printf(format, "UUID", data[0]);
             System.out.printf(format, "Name", data[4] + " " + data[5]);
             System.out.printf(format, "Date of Birth", data[6]);
             System.out.printf(format, "Country", data[11]);
-            System.out.printf(format, "HIV Positive", data[7].equals("true") ? "Yes" : "No");
+            System.out.printf(
+                format,
+                "HIV Positive",
+                data[7].equals("true") ? "Yes" : "No"
+            );
             System.out.printf(format, "Diagnosis Date", data[8]);
-            System.out.printf(format, "On ART Medication", data[9].equals("true") ? "Yes" : "No");
+            System.out.printf(
+                format,
+                "On ART Medication",
+                data[9].equals("true") ? "Yes" : "No"
+            );
             System.out.printf(format, "Start ART Date", data[10]);
             System.out.printf(format, "Years to live", data[12]);
             System.out.println("0. Exit\t 1. Update Profile");
             System.out.print("Enter choice: ");
-            if (scanner.hasNextInt()){
+            if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
                 scanner.nextLine();
-            }else{
+            } else {
                 scanner.nextLine();
                 System.out.println("Please enter a valid number.");
                 continue;
@@ -321,8 +381,7 @@ public class Menu {
                     CLI.clearScreen();
                     System.out.println("Invalid choice, please enter 0/1.");
             }
-        }
-        while(true);
+        } while (true);
     }
 
     public static void updatePatientPage(String uuid, Scanner scanner) {
@@ -331,14 +390,14 @@ public class Menu {
         System.out.print("Enter FirstName: ");
         String firstName = scanner.nextLine();
         Boolean breaker = DataValidator.validateName(firstName);
-        if (!breaker){
+        if (!breaker) {
             System.out.println("Invalid name!");
             return;
         }
         System.out.print("Enter LastName: ");
         String lastName = scanner.nextLine();
         breaker = DataValidator.validateName(lastName);
-        if (!breaker){
+        if (!breaker) {
             System.out.println("Invalid name!");
             return;
         }
@@ -348,7 +407,7 @@ public class Menu {
         System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
         String DOB = scanner.nextLine();
         breaker = DataValidator.validateDOB(DOB);
-        if (!breaker){
+        if (!breaker) {
             System.out.println("Invalid Date of Birth");
             return;
         }
@@ -356,7 +415,9 @@ public class Menu {
         String ISO = scanner.nextLine();
         breaker = DataValidator.validateISO(ISO);
         if (!breaker) {
-            System.out.println("Invalid ISO! Make sure it's in Alpha-2 code format");
+            System.out.println(
+                "Invalid ISO! Make sure it's in Alpha-2 code format"
+            );
             return;
         }
         System.out.print("Are you HIV positive? (y/n): ");
@@ -366,46 +427,71 @@ public class Menu {
         Boolean isOnArt;
         String ArtStartDate;
         double isoExpectancy = getISOLifeExpectancy(ISO);
-        if (opt1.equals("y")){
+        if (opt1.equals("y")) {
             hivStatus = true;
             System.out.print("Enter Diagnosis Date (YYYY-MM-DD): ");
             diagnosisDate = scanner.nextLine();
-            breaker = DataValidator.validateHIVStatusAndDiagnosisDate(hivStatus, diagnosisDate);
-            if (!breaker){
+            breaker = DataValidator.validateHIVStatusAndDiagnosisDate(
+                hivStatus,
+                diagnosisDate
+            );
+            if (!breaker) {
                 System.out.println("Invalid Diagnosis Date!");
                 return;
             }
             System.out.print("Are you on ART medications? (y/n): ");
             String opt2 = scanner.nextLine();
-            if (opt2.equals("y")){
+            if (opt2.equals("y")) {
                 isOnArt = true;
                 System.out.print("Enter ART Start Date (YYYY-MM-DD): ");
                 ArtStartDate = scanner.nextLine();
-                breaker = DataValidator.validateIsOnARTandStartDate(isOnArt, ArtStartDate);
-                if (!breaker){
+                breaker = DataValidator.validateIsOnARTandStartDate(
+                    isOnArt,
+                    ArtStartDate
+                );
+                if (!breaker) {
                     System.out.println("Invalid ART Start Date!");
                     return;
                 }
-            } else if (opt2.equals("n")){
+            } else if (opt2.equals("n")) {
                 isOnArt = false;
-                ArtStartDate = null;
-            }else{
+                ArtStartDate = "0000-00-00";
+            } else {
                 System.out.println("Invalid option!");
                 return;
             }
-        }else if (opt1.equals("n")){
+        } else if (opt1.equals("n")) {
             hivStatus = false;
-            diagnosisDate = null;
-            isOnArt = null;
-            ArtStartDate = null;
-            ISO = null;
-        }else{
+            diagnosisDate = "0000-00-00";
+            isOnArt = false;
+            ArtStartDate = "0000-00-00";
+            // ISO = null;
+        } else {
             System.out.println("Invalid option!");
             return;
         }
-        int remainingYears = calculateRemainingYears(isoExpectancy, hivStatus, isOnArt, DOB, diagnosisDate, ArtStartDate);
+        int remainingYears = calculateRemainingYears(
+            isoExpectancy,
+            hivStatus,
+            isOnArt,
+            DOB,
+            diagnosisDate,
+            ArtStartDate
+        );
         System.out.println(remainingYears);
-        FileHandler.UpdatePatientDetails(uuid,firstName,lastName,DOB,hivStatus,diagnosisDate,isOnArt,ArtStartDate,ISO,passsword, remainingYears);
+        FileHandler.UpdatePatientDetails(
+            uuid,
+            firstName,
+            lastName,
+            DOB,
+            hivStatus,
+            diagnosisDate,
+            isOnArt,
+            ArtStartDate,
+            ISO,
+            passsword,
+            remainingYears
+        );
         System.out.println("Update Complete!");
         CLI.sleep(2);
         CLI.clearScreen();
